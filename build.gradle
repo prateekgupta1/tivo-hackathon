@@ -18,6 +18,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'tivo-hackathon'
 version = '0.0.1-SNAPSHOT'
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -28,4 +29,6 @@ repositories {
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-integration')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile('com.algorithmia:algorithmia-client:1.0.13')
+	compile('com.google.code.gson:gson:2.8.4')
 }
