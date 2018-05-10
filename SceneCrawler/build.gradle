@@ -1,5 +1,4 @@
-group 'tivo-hackathon'
-version '0.0.1-SNAPSHOT'
+version 'unspecified'
 
 apply plugin: 'java'
 

@@ -1,4 +1,0 @@
-rootProject.name = 'tivo-hackathon'
-include 'VideoMashupService'
-include 'SceneCrawler'
-
