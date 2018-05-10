@@ -20,7 +20,7 @@ public class SceneController {
     public String movieSearch(@RequestBody ClipSearchRequest request){
 
         CloudinaryClientWrapper wrapper = new CloudinaryClientWrapper();
-        ArrayList<SceneMetadata> scenes = wrapper.searchScenes(request.getMovieName(), request.getCategory());
+        ArrayList<SceneMetadata> scenes = wrapper.searchScenesCategory(request.getMovieName(), request.getCategory());
         Gson g = new Gson();
         String jsonSceneList = g.toJson(scenes);
         System.out.println("scenelist "+ jsonSceneList);

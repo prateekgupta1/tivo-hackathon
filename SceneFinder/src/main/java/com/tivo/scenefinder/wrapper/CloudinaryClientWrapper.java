@@ -10,6 +10,10 @@ import com.cloudinary.*;
 import com.cloudinary.api.ApiResponse;
 import com.cloudinary.utils.ObjectUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import com.tivo.scenefinder.beans.Offset;
 import com.tivo.scenefinder.beans.SceneMetadata;
 
 public class CloudinaryClientWrapper {
@@ -50,8 +54,8 @@ public class CloudinaryClientWrapper {
                 System.out.println("ACTION_ST = " + stvalue);
                 String endvalue = (String) custom.get(categoryend);
                 System.out.println("ACTION_END = " + endvalue);
-                SceneMetadata buildScene = buildScene(url, stvalue, endvalue);
-                sceneList.add(buildScene);
+                //SceneMetadata buildScene = buildScene(url, stvalue, endvalue);
+                //sceneList.add(buildScene);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -60,7 +64,52 @@ public class CloudinaryClientWrapper {
         return sceneList;
     }
 
-    private SceneMetadata buildScene(String url, String stvalue, String endvalue) {
+    public ArrayList<SceneMetadata> searchScenesCategory(String tag1, String category) {
+        ArrayList<SceneMetadata> sceneList = new ArrayList<SceneMetadata>();
+        try {
+
+
+//			    ApiResponse response2 = api.resourcesByContext(categoryst, ObjectUtils.asMap("tags", tag, "resource_type", "video", "context", "true"));
+            ApiResponse response2 = api.resourcesByTag(tag1, ObjectUtils.asMap("resource_type", "video", "context", "true"));
+            System.out.println("**** LIST OF SCENES" + response2.toString());
+            ArrayList<String> list = (ArrayList<String>) response2.get("resources");
+            System.out.println("****" + list.size());
+            Object[] metadata = (Object[])list.toArray();
+            System.out.println(" scene : " +  metadata.length);
+            for(int i=0;i<metadata.length;i++) {
+                HashMap resourcesMap = (HashMap)metadata[i];
+                System.out.println("Metadata : " + resourcesMap.size());
+                HashMap context = (HashMap)resourcesMap.get("context");
+                String url = (String)resourcesMap.get("url");
+                System.out.println("url " + url);
+                if (context != null) {
+                    //					System.out.println("Context : " + context.toString());
+                    HashMap custom = (HashMap) context.get("custom");
+                    if (!custom.containsKey(category))
+                        continue;
+                    String title = (String) custom.get("title");
+                    String value = (String) custom.get(category);
+                    System.out.println("ACTION = " + value);
+                    JsonParser parser = new JsonParser();
+                    Gson g = new Gson();
+                    JsonArray offsetarray = parser.parse(value).getAsJsonObject().getAsJsonArray("offset");
+                    System.out.println("*****" + offsetarray.toString());
+                    for(int j=0; j<offsetarray.size();j++) {
+                        Offset offset = g.fromJson(offsetarray.get(j), Offset.class);
+                        SceneMetadata buildScene = buildScene(url, offset.getSo(), offset.getEo(), title);
+                        sceneList.add(buildScene);
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return sceneList;
+    }
+
+    private SceneMetadata buildScene(String url, float stvalue, float endvalue, String title) {
         SceneMetadata scene = new SceneMetadata();
         StringBuilder builder = new StringBuilder();
         String movieContent = url.substring(url.lastIndexOf("/")+1);
@@ -73,6 +122,7 @@ public class CloudinaryClientWrapper {
 
         scene.setUrl(builder.toString());
         scene.setMovieTitle(movieContent);
+        scene.setMovieTitle(title);
         return scene;
     }
 
