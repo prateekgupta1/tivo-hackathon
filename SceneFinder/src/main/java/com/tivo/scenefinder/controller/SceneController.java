@@ -1,13 +1,14 @@
 package com.tivo.scenefinder.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonParseException;
+import com.google.gson.Gson;
 import com.tivo.scenefinder.beans.ClipSearchRequest;
 import com.tivo.scenefinder.beans.SceneMetadata;
+import com.tivo.scenefinder.wrapper.CloudinaryClientWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @RestController
 public class SceneController {
@@ -18,15 +19,12 @@ public class SceneController {
     @RequestMapping(value="/findScene", method = RequestMethod.POST)
     public String movieSearch(@RequestBody ClipSearchRequest request){
 
-        SceneMetadata scene = new SceneMetadata();
+        CloudinaryClientWrapper wrapper = new CloudinaryClientWrapper();
+        ArrayList<SceneMetadata> scenes = wrapper.searchScenes(request.getMovieName(), request.getCategory());
+        Gson g = new Gson();
+        String jsonSceneList = g.toJson(scenes);
+        System.out.println("scenelist "+ jsonSceneList);
 
-        String response = null;
-
-        try {
-            response = objectMapper.writeValueAsString(scene);
-        }catch(JsonProcessingException e) {
-
-        }
-        return response;
+        return jsonSceneList;
     }
 }

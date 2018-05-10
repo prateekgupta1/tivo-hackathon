@@ -4,7 +4,9 @@ public class SceneMetadata {
 
     private String url;
 
-    private String title;
+    private String movieTitle;
+
+    private String imageUrl;
 
     public String getUrl() {
         return url;
@@ -14,11 +16,19 @@ public class SceneMetadata {
         this.url = url;
     }
 
-    public String getTitle() {
-        return title;
+    public String getMovieTitle() {
+        return movieTitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setMovieTitle(String movieTitle) {
+        this.movieTitle = movieTitle;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
